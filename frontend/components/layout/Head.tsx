@@ -4,7 +4,8 @@ import { useRouter } from 'next/router'
 /**
  * Constants & Helpers
  */
-export const WEBSITE_HOST_URL = 'https://nextjs-ethereum-starter.vercel.app/'
+//TODO add website
+export const WEBSITE_HOST_URL = ''
 
 /**
  * Prop Types
