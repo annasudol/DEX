@@ -1,5 +1,6 @@
 # DEX
-MyToken deployed to: 0xE5CF4f4D4A339d7FC36cf128Dc34af2cb6b3d1d9
-Dex deployed to: 0xD77DD139b32351816f1DA65C54Bc003B32E311f8
+MyToken deployed to: 0x59bBfd37790d01d16E83d4be0E0b0311354463aB
+Dex deployed to: 0x7C33C053345937044162f0F76EC20788FB3E83E7
+https://goerli.etherscan.io/address/0x59bBfd37790d01d16E83d4be0E0b0311354463aB#code
 
-//npx hardhat verify 0xE5CF4f4D4A339d7FC36cf128Dc34af2cb6b3d1d9 --network goerli
+https://goerli.etherscan.io/address/0x7C33C053345937044162f0F76EC20788FB3E83E7#code
