@@ -20,7 +20,6 @@ import {
 import { Dex as DEX_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
 import DEX_ABI from '../artifacts/contracts/Dex.sol/DEX.json'
 import { Layout } from '../components/layout/Layout'
-import { useCheckLocalChain } from '../hooks/useCheckLocalChain'
 import { useIsMounted } from '../hooks/useIsMounted'
 import { DEX as YourContractType } from '../types/typechain'
 import Dex from '../components/Dex'
