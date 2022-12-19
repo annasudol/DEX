@@ -26,7 +26,7 @@ import { Layout } from '../components/layout/Layout'
 import { useCheckLocalChain } from '../hooks/useCheckLocalChain'
 import { useIsMounted } from '../hooks/useIsMounted'
 import { YourContract as YourContractType } from '../types/typechain'
-
+import Dex from '../components/Dex'
 /**
  * Constants & Helpers
  */
@@ -199,6 +199,7 @@ const Home: NextPage = () => {
           </Button>
         </Box>
       </Box>
+      <Dex />
     </Layout>
   )
 }

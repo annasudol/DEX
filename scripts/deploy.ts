@@ -7,34 +7,24 @@ import fs from 'fs';
 import { config, ethers } from 'hardhat';
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
 
-  // fs.unlinkSync(`${config.paths.artifacts}/contracts/contractAddress.ts`);
+  const MyToken = await ethers.getContractFactory('MyToken');
+  const my_token_contract = await MyToken.deploy();
+  await my_token_contract.deployed();
+  console.log('MyToken deployed to:', my_token_contract.address);
 
-  // We get the contract to deploy
-  const YourContract = await ethers.getContractFactory('YourContract');
-  const contract = await YourContract.deploy();
-  await contract.deployed();
-  console.log('YourContract deployed to:', contract.address);
-
-  const YourNFT = await ethers.getContractFactory('YourNFT');
-  const YourNFTContract = await YourNFT.deploy();
-  await YourNFTContract.deployed();
-  console.log('YourNFT deployed to:', YourNFTContract.address);
+  const Dex = await ethers.getContractFactory('Dex');
+  const dex_contract = await Dex.deploy(my_token_contract.address);
+  await dex_contract.deployed();
+  console.log('Dex deployed to:', dex_contract.address);
   saveFrontendFiles(
-    contract.address,
-    'YourContract',
-    YourNFTContract.address,
-    'YourNFTContract'
+    my_token_contract.address,
+    'MyToken',
+    dex_contract.address,
+    'Dex'
   );
 }
 
-// https://github.com/nomiclabs/hardhat-hackathon-boilerplate/blob/master/scripts/deploy.js
 function saveFrontendFiles(
   contractAddress: string,
   contractName: string,
