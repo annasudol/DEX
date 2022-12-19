@@ -1,2 +1,2 @@
-export const YourContract = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
-export const YourNFTContract = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+export const MyToken = '0xE5CF4f4D4A339d7FC36cf128Dc34af2cb6b3d1d9'
+export const Dex = '0xD77DD139b32351816f1DA65C54Bc003B32E311f8'

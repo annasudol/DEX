@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -57,7 +57,7 @@ contract DEX {
         );
         emit EthToTokenSwap(
             msg.sender,
-            "Eth to Balloons",
+            "Eth to MyToken",
             msg.value,
             tokenOutput
         );
@@ -78,7 +78,7 @@ contract DEX {
         require(sent, "tokenToEth: revert in transferring eth to you!");
         emit TokenToEthSwap(
             msg.sender,
-            "Balloons to ETH",
+            "MyToken to ETH",
             ethOutput,
             tokenInput
         );

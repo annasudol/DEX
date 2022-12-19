@@ -13,7 +13,7 @@ async function main() {
   await my_token_contract.deployed();
   console.log('MyToken deployed to:', my_token_contract.address);
 
-  const Dex = await ethers.getContractFactory('Dex');
+  const Dex = await ethers.getContractFactory('DEX');
   const dex_contract = await Dex.deploy(my_token_contract.address);
   await dex_contract.deployed();
   console.log('Dex deployed to:', dex_contract.address);
