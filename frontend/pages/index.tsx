@@ -2,12 +2,9 @@ import {
   Box,
   Button,
   Divider,
-  Heading,
   Input,
   Link,
-  ListItem,
   Text,
-  UnorderedList,
   useToast,
 } from '@chakra-ui/react'
 import { ethers, providers } from 'ethers'
@@ -33,18 +30,12 @@ const localProvider = new providers.StaticJsonRpcProvider(
 
 const GOERLI_CONTRACT_ADDRESS = '0x3B73833638556f10ceB1b49A18a27154e3828303'
 
-/**
- * Prop Types
- */
-
 const Home: NextPage = () => {
   const { isLocalChain } = useCheckLocalChain()
 
   const { isMounted } = useIsMounted()
 
-  const CONTRACT_ADDRESS = isLocalChain
-    ? DEX_CONTRACT_ADDRESS
-    : GOERLI_CONTRACT_ADDRESS
+  const CONTRACT_ADDRESS = DEX_CONTRACT_ADDRESS
 
   const { address } = useAccount()
 
@@ -98,10 +89,12 @@ const Home: NextPage = () => {
         provider
       ) as YourContractType
       try {
-        const data = await contract.getLiquidity(
-          '0x80dD5aD6B8775c4E31C999cA278Ef4D035717872'
-        )
-        console.log(address, 'data')
+        const data = await contract.totalLiquidity()
+        console.log(address, ethers.utils.formatEther(data), 'data')
+        const balance = await contract.getLiquidity(address as string)
+        console.log(balance, 'data')
+        console.log(address, ethers.utils.formatEther(balance), 'data')
+
         // dispatch({ type: 'SET_GREETING', greeting: data })
       } catch (err) {
         // eslint-disable-next-line no-console
