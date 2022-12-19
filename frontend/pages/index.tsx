@@ -24,11 +24,7 @@ import { useCheckLocalChain } from '../hooks/useCheckLocalChain'
 import { useIsMounted } from '../hooks/useIsMounted'
 import { DEX as YourContractType } from '../types/typechain'
 import Dex from '../components/Dex'
-const localProvider = new providers.StaticJsonRpcProvider(
-  'http://localhost:8545'
-)
-
-const GOERLI_CONTRACT_ADDRESS = '0x3B73833638556f10ceB1b49A18a27154e3828303'
+import { formatEther } from 'ethers/lib/utils.js'
 
 const Home: NextPage = () => {
   const { isLocalChain } = useCheckLocalChain()
@@ -57,15 +53,13 @@ const Home: NextPage = () => {
   const { isLoading } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess(data) {
-      console.log('success data', data)
       toast({
         title: 'Transaction Successful',
         description: (
           <>
-            <Text>Successfully updated the Greeting!</Text>
             <Text>
               <Link
-                href={`https://goerli.etherscan.io/tx/${data?.blockHash}`}
+                href={`https://goerli.etherscan.io/tx/${data?.transactionHash}`}
                 isExternal
               >
                 View on Etherscan
@@ -92,8 +86,7 @@ const Home: NextPage = () => {
         const data = await contract.totalLiquidity()
         console.log(address, ethers.utils.formatEther(data), 'data')
         const balance = await contract.getLiquidity(address as string)
-        console.log(balance, 'data')
-        console.log(address, ethers.utils.formatEther(balance), 'data')
+        console.log(address, ethers.utils.formatUnits(data), 'balance')
 
         // dispatch({ type: 'SET_GREETING', greeting: data })
       } catch (err) {
