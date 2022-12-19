@@ -24,19 +24,12 @@ import { useCheckLocalChain } from '../hooks/useCheckLocalChain'
 import { useIsMounted } from '../hooks/useIsMounted'
 import { DEX as YourContractType } from '../types/typechain'
 import Dex from '../components/Dex'
-import { formatEther } from 'ethers/lib/utils.js'
 
 const Home: NextPage = () => {
-  const { isLocalChain } = useCheckLocalChain()
-
   const { isMounted } = useIsMounted()
-
   const CONTRACT_ADDRESS = DEX_CONTRACT_ADDRESS
-
   const { address } = useAccount()
-
   const provider = useProvider()
-
   const toast = useToast()
   const [initValue, setInitValue] = useState<number>(0)
 
@@ -53,13 +46,15 @@ const Home: NextPage = () => {
   const { isLoading } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess(data) {
+      console.log('success data', data)
       toast({
         title: 'Transaction Successful',
         description: (
           <>
+            <Text>Successfully updated the Greeting!</Text>
             <Text>
               <Link
-                href={`https://goerli.etherscan.io/tx/${data?.transactionHash}`}
+                href={`https://goerli.etherscan.io/tx/${data?.blockHash}`}
                 isExternal
               >
                 View on Etherscan
@@ -74,8 +69,7 @@ const Home: NextPage = () => {
     },
   })
 
-  // call the smart contract, read the current greeting value
-  async function fetchContractGreeting() {
+  async function fetchBalance() {
     if (provider) {
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
@@ -86,11 +80,9 @@ const Home: NextPage = () => {
         const data = await contract.totalLiquidity()
         console.log(address, ethers.utils.formatEther(data), 'data')
         const balance = await contract.getLiquidity(address as string)
-        console.log(address, ethers.utils.formatUnits(data), 'balance')
-
-        // dispatch({ type: 'SET_GREETING', greeting: data })
+        console.log(balance, 'data')
+        console.log(address, ethers.utils.formatEther(balance), 'data')
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.log('Error: ', err)
       }
     }
@@ -106,12 +98,11 @@ const Home: NextPage = () => {
         <Text fontSize="xl">Contract Address: {CONTRACT_ADDRESS}</Text>
         <Divider my="8" borderColor="gray.400" />
         <Box>
-          {/* <Text fontSize="lg">Greeting: {state.greeting}</Text> */}
           <Button
             mt="2"
             colorScheme="teal"
             disabled={!address}
-            onClick={fetchContractGreeting}
+            onClick={fetchBalance}
           >
             {address ? 'get balance' : 'Please Connect Your Wallet'}
           </Button>
