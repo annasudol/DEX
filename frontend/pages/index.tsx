@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { ethers, providers } from 'ethers'
 import type { NextPage } from 'next'
-import { useReducer } from 'react'
+import { useState } from 'react'
 import {
   useAccount,
   useContractWrite,
@@ -20,17 +20,13 @@ import {
   useProvider,
   useWaitForTransaction,
 } from 'wagmi'
-import { MyToken as MY_TOKEN_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
-import MyToken from '../artifacts/contracts/MyToken.sol/MyToken.json'
+import { Dex as DEX_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
+import DEX_ABI from '../artifacts/contracts/Dex.sol/DEX.json'
 import { Layout } from '../components/layout/Layout'
 import { useCheckLocalChain } from '../hooks/useCheckLocalChain'
 import { useIsMounted } from '../hooks/useIsMounted'
-import { MyToken as YourContractType } from '../types/typechain'
+import { DEX as YourContractType } from '../types/typechain'
 import Dex from '../components/Dex'
-/**
- * Constants & Helpers
- */
-
 const localProvider = new providers.StaticJsonRpcProvider(
   'http://localhost:8545'
 )
@@ -40,55 +36,14 @@ const GOERLI_CONTRACT_ADDRESS = '0x3B73833638556f10ceB1b49A18a27154e3828303'
 /**
  * Prop Types
  */
-type StateType = {
-  greeting: string
-  inputValue: string
-}
-type ActionType =
-  | {
-      type: 'SET_GREETING'
-      greeting: StateType['greeting']
-    }
-  | {
-      type: 'SET_INPUT_VALUE'
-      inputValue: StateType['inputValue']
-    }
-
-/**
- * Component
- */
-const initialState: StateType = {
-  greeting: '',
-  inputValue: '',
-}
-
-function reducer(state: StateType, action: ActionType): StateType {
-  switch (action.type) {
-    // Track the greeting from the blockchain
-    case 'SET_GREETING':
-      return {
-        ...state,
-        greeting: action.greeting,
-      }
-    case 'SET_INPUT_VALUE':
-      return {
-        ...state,
-        inputValue: action.inputValue,
-      }
-    default:
-      throw new Error()
-  }
-}
 
 const Home: NextPage = () => {
-  const [state, dispatch] = useReducer(reducer, initialState)
-
-  const { isLocalChain, setLocalChain } = useCheckLocalChain()
+  const { isLocalChain } = useCheckLocalChain()
 
   const { isMounted } = useIsMounted()
 
   const CONTRACT_ADDRESS = isLocalChain
-    ? MY_TOKEN_CONTRACT_ADDRESS
+    ? DEX_CONTRACT_ADDRESS
     : GOERLI_CONTRACT_ADDRESS
 
   const { address } = useAccount()
@@ -96,13 +51,14 @@ const Home: NextPage = () => {
   const provider = useProvider()
 
   const toast = useToast()
+  const [initValue, setInitValue] = useState<number>(0)
 
   const { config } = usePrepareContractWrite({
     address: CONTRACT_ADDRESS,
-    abi: YourContract.abi,
-    functionName: 'setGreeting',
-    args: [state.inputValue],
-    enabled: Boolean(state.inputValue),
+    abi: DEX_ABI.abi,
+    functionName: 'init',
+    args: [initValue],
+    enabled: Boolean(initValue),
   })
 
   const { data, write } = useContractWrite(config)
@@ -138,12 +94,15 @@ const Home: NextPage = () => {
     if (provider) {
       const contract = new ethers.Contract(
         CONTRACT_ADDRESS,
-        YourContract.abi,
+        DEX_ABI.abi,
         provider
       ) as YourContractType
       try {
-        const data = await contract.greeting()
-        dispatch({ type: 'SET_GREETING', greeting: data })
+        const data = await contract.getLiquidity(
+          '0x80dD5aD6B8775c4E31C999cA278Ef4D035717872'
+        )
+        console.log(address, 'data')
+        // dispatch({ type: 'SET_GREETING', greeting: data })
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log('Error: ', err)
@@ -161,32 +120,27 @@ const Home: NextPage = () => {
         <Text fontSize="xl">Contract Address: {CONTRACT_ADDRESS}</Text>
         <Divider my="8" borderColor="gray.400" />
         <Box>
-          <Text fontSize="lg">Greeting: {state.greeting}</Text>
+          {/* <Text fontSize="lg">Greeting: {state.greeting}</Text> */}
           <Button
             mt="2"
             colorScheme="teal"
             disabled={!address}
             onClick={fetchContractGreeting}
           >
-            {address ? 'Fetch Greeting' : 'Please Connect Your Wallet'}
+            {address ? 'get balance' : 'Please Connect Your Wallet'}
           </Button>
         </Box>
         <Divider my="8" borderColor="gray.400" />
         <Box>
           <Text fontSize="lg" mb="2">
-            Enter a Greeting:
+            init a contract
           </Text>
           <Input
             bg="white"
-            type="text"
-            placeholder="Enter a Greeting"
+            type="number"
+            placeholder="contract value"
             disabled={!address || isLoading}
-            onBlur={(e) => {
-              dispatch({
-                type: 'SET_INPUT_VALUE',
-                inputValue: e.target.value,
-              })
-            }}
+            onChange={(e) => setInitValue(Number(e.target.value))}
           />
           <Button
             mt="2"
@@ -195,7 +149,7 @@ const Home: NextPage = () => {
             disabled={!address || isLoading}
             onClick={() => write?.()}
           >
-            {address ? 'Set Greeting' : 'Please Connect Your Wallet'}
+            {address ? 'init contract' : 'Please Connect Your Wallet'}
           </Button>
         </Box>
       </Box>
