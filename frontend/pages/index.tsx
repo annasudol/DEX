@@ -20,12 +20,12 @@ import {
   useProvider,
   useWaitForTransaction,
 } from 'wagmi'
-import { YourContract as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
-import YourContract from '../artifacts/contracts/YourContract.sol/YourContract.json'
+import { MyToken as MY_TOKEN_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
+import MyToken from '../artifacts/contracts/MyToken.sol/MyToken.json'
 import { Layout } from '../components/layout/Layout'
 import { useCheckLocalChain } from '../hooks/useCheckLocalChain'
 import { useIsMounted } from '../hooks/useIsMounted'
-import { YourContract as YourContractType } from '../types/typechain'
+import { MyToken as YourContractType } from '../types/typechain'
 import Dex from '../components/Dex'
 /**
  * Constants & Helpers
@@ -83,12 +83,12 @@ function reducer(state: StateType, action: ActionType): StateType {
 const Home: NextPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const { isLocalChain } = useCheckLocalChain()
+  const { isLocalChain, setLocalChain } = useCheckLocalChain()
 
   const { isMounted } = useIsMounted()
 
   const CONTRACT_ADDRESS = isLocalChain
-    ? LOCAL_CONTRACT_ADDRESS
+    ? MY_TOKEN_CONTRACT_ADDRESS
     : GOERLI_CONTRACT_ADDRESS
 
   const { address } = useAccount()
